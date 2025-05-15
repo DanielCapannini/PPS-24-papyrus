@@ -36,7 +36,7 @@ jobs:
 
       - name: Install sbt
         run: |
-          echo "sbt.version=1.10.0" > ./project/build.properties
+          echo "sbt.version=1.10.1" > ./project/build.properties
           sbt sbtVersion
 
       - name: Run Tests
