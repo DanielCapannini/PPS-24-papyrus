@@ -1,4 +1,4 @@
-name: Test Code
+name: Build and Test Scala Project
 
 on:
   push:
@@ -7,9 +7,11 @@ on:
   pull_request:
     branches:
       - '**'
+
 jobs:
-  test:
+  build-and-test:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -28,16 +30,18 @@ jobs:
             ~/.sbt/boot
             ~/.sbt/launchers
             ~/.coursier
-          key: |
-            ${{ runner.os }}-sbt-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('**/project/build.properties') }}
+          key: ${{ runner.os }}-sbt-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('**/project/build.properties') }}
           restore-keys: |
             ${{ runner.os }}-sbt-${{ hashFiles('**/*.sbt') }}
             ${{ runner.os }}-sbt-
 
-      - name: Install sbt
+      - name: Set sbt version to 1.10.1
         run: |
-          echo "sbt.version=1.10.1" > ./project/build.properties
-          sbt sbtVersion
+          mkdir -p project
+          echo "sbt.version=1.10.1" > project/build.properties
 
-      - name: Run Tests
-        run: sbt clean test
+      - name: Compile (Build) the project
+        run: sbt compile
+
+      - name: Run all tests
+        run: sbt test
